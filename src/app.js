@@ -1,9 +1,13 @@
 const express = require('express')
 const connectDB = require('./config/db')
 const cookieParser = require("cookie-parser")
-
+const dotenv = require("dotenv")
+dotenv.config({
+    path: './.env'
+})
 
 const app = express();
+const port = process.env.PORT || 3000;
 
 // middleware to read json
 app.use(express.json());  // use as a middleware to read json data from the body
@@ -20,13 +24,14 @@ app.use("/",profileRouter)
 app.use("/",requestRouter)
 app.use("/",userRouter)
 
+
 // db connection
 connectDB()
 .then(()=> {
     console.log("Database connected successfully")
     
-    app.listen(3000, () => {
-        console.log("Server is listening on port 3000");
+    app.listen(port, () => {
+        console.log(`Server is listening on port ${port}`);
     })
 })
 .catch((e) => {
