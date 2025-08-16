@@ -57,3 +57,12 @@ The goal is to help developers connect, collaborate, and build together.
 - Express.js
 - MongoDB (Mongoose)
 - JWT Authentication
+
+## 🎯 Learning Outcomes
+
+Through this project, I gained hands-on experience in:
+
+- Structuring backend applications for scalability
+- Implementing authentication & authorization securely
+- Writing clean, reusable code with Express.js
+- Managing database models with MongoDB & Mongoose
