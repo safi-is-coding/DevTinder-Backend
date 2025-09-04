@@ -33,8 +33,13 @@ authRouter.post("/signup", async (req, res) => {
     })
 
     try {
-        await user.save()
-        res.status(200).json({data: `${firstName} added successfully...`})
+        const savedUser = await user.save()
+
+        const token = await savedUser.getJWT()
+
+        res.cookie("token", token, { expires: new Date(Date.now() + 900000), httpOnly: true })
+
+        res.status(200).json({message: `${firstName} added successfully...`, data: savedUser})
     } catch (error) {
         console.error("Error adding user:", error.message);
         res.status(500).json({error: `Error adding user : ${error.message}`});
@@ -68,7 +73,7 @@ authRouter.post("/login", async(req, res) => {
         
     } catch (error) {
         console.error("Error during login:", error.message);
-        res.status(500).json({error: "Error during login"});
+        res.status(500).json({message: "Invalid Credentials !"});
     }
 })
 
