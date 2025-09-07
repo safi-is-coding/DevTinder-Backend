@@ -12,7 +12,7 @@ const port = process.env.PORT || 3000;
 
 app.use(cors({
     // origin: process.env.CORS_ORIGIN,
-    origin: 'http://localhost:5173', 
+    origin: 'http://16.171.197.83/api', 
     credentials: true, // allow credentials to be sent
 }))
 // middleware to read json
