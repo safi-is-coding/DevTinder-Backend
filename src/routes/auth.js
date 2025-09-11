@@ -4,17 +4,19 @@ const User = require("../models/user")
 const {validateSignUpData} = require("../utils/validation")
 const bcrypt = require('bcrypt')
 const jwt = require("jsonwebtoken")
+const {upload} = require("../config/cloudinary.js")
 
 
 const authRouter = express.Router()
 
 //signup api
-authRouter.post("/signup", async (req, res) => {
+authRouter.post("/signup", upload.single("photo") ,async (req, res) => {
     
     //validation
     validateSignUpData(req)
 
-    const {firstName, lastName, emailId, password, skills, age, gender, about, photoUrl} = req.body
+    const {firstName, lastName, emailId, password, skills, age, gender, about} = req.body
+    const photoUrl = req.file?.path;
 
     // encrypt the password
     // const hashedPassword = await bcrypt.hash(password, 10)
@@ -91,8 +93,6 @@ authRouter.post("/logout", async (req, res) => {
         res.status(500).json({error: "Error during logout"});     
     }
 })
-
-
 
 
 module.exports = authRouter

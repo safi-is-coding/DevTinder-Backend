@@ -3,6 +3,7 @@ const express = require('express')
 const User = require("../models/user")
 const {validateProfileEditData} = require("../utils/validation")
 const {userAuth} = require("../middlewares/auth")
+const {upload} = require("../config/cloudinary.js")
 
 
 const profileRouter = express.Router()
@@ -55,30 +56,40 @@ profileRouter.get("/profile/view", userAuth, async (req, res) => {
 //     }
 // })
 
-profileRouter.patch("/profile/edit", userAuth, async(req, res) => {
-    try {
-        if(!validateProfileEditData(req)){
-            throw new Error("Invalid Edit Request !")
+profileRouter.patch(
+    "/profile/edit",
+    userAuth,
+    upload.single("photo"), // accept photo optionally
+    async (req, res) => {
+      try {
+        if (!validateProfileEditData(req)) {
+          throw new Error("Invalid Edit Request !");
         }
-
-        const loggedInUser = req.user
-        
-        Object.keys(req.body).forEach((key) => (loggedInUser[key] = req.body[key]))
-        
-        await loggedInUser.save()
-
-        res.status(200).json(
-            {
-                message: `${loggedInUser.firstName}, your profile is updated successfully...`,
-                data: loggedInUser
-            });
-        
-    } catch (error) {
+  
+        const loggedInUser = req.user;
+  
+        // Update normal fields from body
+        Object.keys(req.body).forEach((key) => {
+          loggedInUser[key] = req.body[key];
+        });
+  
+        // If photo is uploaded, update it
+        if (req.file) {
+          loggedInUser.photoUrl = req.file.path; // Cloudinary URL
+        }
+  
+        await loggedInUser.save();
+  
+        res.status(200).json({
+          message: `${loggedInUser.firstName}, your profile is updated successfully...`,
+          data: loggedInUser,
+        });
+      } catch (error) {
         console.error("Error updating profile:", error.message);
-        res.status(500).json({error: "Error updating profile"});
+        res.status(500).json({ error: "Error updating profile" });
+      }
     }
-})
-
+  );
 profileRouter.patch("/profile/password", userAuth, async (req, res) => {
     try {
         const {oldPassword, newPassword} = req.body
