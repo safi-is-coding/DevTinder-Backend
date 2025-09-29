@@ -7,6 +7,7 @@
 
 ## profileRouter
 - GET /profile/view
+- GET /profile/view/:userId
 - PATCH /profile/edit
 - PATCH /profile/password
 

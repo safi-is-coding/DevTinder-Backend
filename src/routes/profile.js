@@ -20,6 +20,22 @@ profileRouter.get("/profile/view", userAuth, async (req, res) => {
     }
 })
 
+profileRouter.get("/profile/view/:id", async(req, res) => {
+  const userId = req.params?.id
+  try {
+    const user = await User.findById(userId).select("-password")
+
+    if(!user) {
+      return res.status(404).json({message: "User not found"})
+    }
+
+    res.status(200).json({data: user})
+  } catch (error) {
+    console.error("Error fetching profile:", error.message);
+    res.status(500).json({error: "Error fetching profile"});
+  }
+})
+
 
 // update api
 // profileRouter.patch("/profile/edit", async (req, res) => {
@@ -90,22 +106,29 @@ profileRouter.patch(
       }
     }
   );
+
+
 profileRouter.patch("/profile/password", userAuth, async (req, res) => {
     try {
         const {oldPassword, newPassword} = req.body
         const loggedInUser = req.user
 
         if(!oldPassword){
-            throw new Error("Old Password is required...")
+            // throw new Error("Old Password is required...")
+            res.status(404).json({message: "Old Password is required"});
         }
         if(!newPassword) {
-            throw new Error("New Password is required...")
+            // throw new Error("New Password is required...")
+            res.status(404).json({message: "New Password is required"});
+
         }
         // compare old password
         const isPasswordValid = await loggedInUser.validatePassword(oldPassword)
         console.log("profile "+isPasswordValid);
         if(!isPasswordValid) {
-            throw new Error("Old Password is incorrect...")
+            // throw new Error("Old Password is incorrect...")
+            res.status(404).json({message: "Old Password is incorrect"});
+
         }
         // update password
         loggedInUser.password = newPassword
