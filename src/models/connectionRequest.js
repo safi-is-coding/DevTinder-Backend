@@ -21,7 +21,7 @@ const connectionRequestSchema = new mongoose.Schema({
     },
     requestTime:{
         type: Date,
-        default: Date.now()
+        default: null
     }
 }, 
 {

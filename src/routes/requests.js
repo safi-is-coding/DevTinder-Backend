@@ -15,6 +15,7 @@ requestRouter.post("/request/send/:status/:toUserId", userAuth, async (req, res)
         const fromUserId = req.user._id
         const toUserId = req.params.toUserId
         const status = req.params.status
+        const {requestTime} = req.body
 
         // validate the status
         const allowedStatus = ["interested", "ignore"]
@@ -45,7 +46,8 @@ requestRouter.post("/request/send/:status/:toUserId", userAuth, async (req, res)
         const connectionRequest = new ConnectionRequest({
             fromUserId,
             toUserId,
-            status
+            status,
+            requestTime
         })
 
         const data = await connectionRequest.save()
