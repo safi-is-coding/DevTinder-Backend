@@ -18,6 +18,10 @@ const connectionRequestSchema = new mongoose.Schema({
             values: ["ignore", "interested", "accepted", "rejected"],
             message: `{VALUE} is incorrect status type !`
         }
+    },
+    requestTime:{
+        type: Date,
+        default: Date.now()
     }
 }, 
 {
